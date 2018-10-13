@@ -1,0 +1,23 @@
+Kcms symfony bundle
+----------------------
+
+I) Installation
+
+ - composer require karkov/kcms-bundle
+ 
+II) Edit files
+
+bundles.php
+
+ - Add bundle by adding  
+ Karkov\Kcms\KcmsBundle::class => ['all' => true],
+ 
+routes.yaml 
+ 
+ - Add route by adding 
+
+app_kcms:
+	resource: '../../vendor/karkov/kcms-bundle/src/Controller/'
+	type:     annotation
+	
+III) 
