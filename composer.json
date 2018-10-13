@@ -1,0 +1,20 @@
+{
+    "name": "karkov/kcms-bundle",
+    "description": "Kcms bundle for symfony",
+    "type": "library",
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "karkov",
+            "email": "karkov2002@yahoo.fr"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Karkov\\Kcms\\": "src/"
+        }
+    },
+    "require": {
+        "phpunit/phpunit": "^7.4"
+    }
+}
