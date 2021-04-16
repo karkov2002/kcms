@@ -1,25 +1,31 @@
 <?php
 
-// src/Controller/Kcms.php using bundle
-
 namespace Karkov\Kcms\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Karkov\Kcms\KcmsBundle;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Psr\Log\LoggerInterface;
 
-class KcmsController extends Controller
+class KcmsController extends AbstractController
 {
-	/**
-	 * @Route("kcms")
-	 */
-	public function buildPage()
-	{
-		return new Response(
-            '<html><body>Hello from kcms bundle</body></html>'
-        );
-	}
+    private $config;
 
+    public function __construct(KcmsBundle $KcmsBundle)
+    {
+        $this->config = $KcmsBundle->getConfig();
+    }
+
+    /**
+     * @Route("/kcms/{slug}", name="kcms_controller")
+     */
+    public function __invoke(Request $request, string $slug): Response
+    {
+        $local = $request->getLocale();
+
+        dump([$local, $slug, $this->config]);
+
+        return $this->render('@Kcms/default/default.html.twig', []);
+    }
 }

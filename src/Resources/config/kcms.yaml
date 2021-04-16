@@ -1,0 +1,6 @@
+kcms:
+    zones:
+        nb: 10
+    multilingual:
+      enable: false
+      default_local: ~

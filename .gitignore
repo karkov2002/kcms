@@ -1,4 +1,3 @@
 tmp/*
 vendor/*
 vendor/**/.git
-src/config/*.php
