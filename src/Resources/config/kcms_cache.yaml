@@ -1,0 +1,7 @@
+framework:
+  cache:
+    pools:
+      cache.kcms:
+        default_lifetime: 5
+        adapters:
+          - cache.adapter.filesystem

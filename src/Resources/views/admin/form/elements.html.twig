@@ -1,0 +1,20 @@
+{% use 'form_div_layout.html.twig' %}
+
+{%- block form_widget_simple -%}
+    {% if attr.class is defined and attr.class == 'kcms_img' %}
+        <div id="img_selector_{{ id }}" data-id="{{ id }}" class="img_selector">
+            {{ parent() }}
+            <div class="img_preview" id="img_preview_{{ id }}">
+                <input type="button" value="Select" class="add_img_btn btn btn-primary" data-id="{{ id }}" />
+                {% if data is empty %}
+                    <img />
+                {% else %}
+                    <img src="{{ data }}" />
+                    <a class="img_clear fa fa-window-close" data-id="{{ id }}"></a>
+                {% endif %}
+            </div>
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{%- endblock form_widget_simple -%}

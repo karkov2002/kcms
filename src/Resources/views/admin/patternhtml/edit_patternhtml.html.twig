@@ -1,0 +1,35 @@
+{% extends '@Kcms/admin/admin.html.twig' %}
+
+{% block title %}Kcms - Edit Pattern Html{% endblock %}
+
+{% block body_title %}
+    <h1>Edit Pattern Html</h1>
+{% endblock %}
+
+{% block body %}
+    <div>
+        {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        <div data-id="html_pattern_pattern">
+            Adding new element :
+            <input type="button" value="HTML" class="btn btn-primary add_element_html" />
+            <input type="button" value="HTML_LIGHT" class="btn btn-primary add_element_html" />
+            <input type="button" value="TXT" class="btn btn-primary add_element_html" />
+            <input type="button" value="TXT_AREA" class="btn btn-primary add_element_html" />
+            <input type="button" value="IMG" class="btn btn-primary add_element_html" />
+            <input type="button" value="MEDIA_URL" class="btn btn-primary add_element_html" />
+        </div>
+        {{ form_row(form.pattern) }}
+        <div><input type="submit" value="save" class="btn btn-primary"></div>
+        {{ form_end(form) }}
+    </div>
+    <hr />
+    <h2>List of contents using this pattern </h2>
+    <div>
+        <ul>
+        {% for contentLocal in htmlPattern.contentLocals %}
+            <li><a href="/kcms/admin/edit_content/{{ contentLocal.content.id }}" target="_blank">{{  contentLocal.content.title }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

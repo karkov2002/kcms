@@ -1,0 +1,48 @@
+{
+  "entrypoints": {
+    "app": {
+      "js": [
+        "/bundles/kcms/runtime.js",
+        "/bundles/kcms/vendors-node_modules_symfony_stimulus-bridge_dist_index_js-node_modules_bootstrap_dist_js_boo-c5e2d0.js",
+        "/bundles/kcms/app.js"
+      ],
+      "css": [
+        "/bundles/kcms/app.css"
+      ]
+    },
+    "kcms": {
+      "js": [
+        "/bundles/kcms/runtime.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_jquery_dist_jquery_js.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_axios_index_js-karkov_kcms-bundle_node_modules_jquery-03a9eb.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_bootstrap_dist_js_bootstrap_js.js",
+        "/bundles/kcms/kcms.js"
+      ],
+      "css": [
+        "/bundles/kcms/kcms.css"
+      ]
+    },
+    "kcms_admin": {
+      "js": [
+        "/bundles/kcms/runtime.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_jquery_dist_jquery_js.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_axios_index_js-karkov_kcms-bundle_node_modules_jquery-03a9eb.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_core-js_modules_es_string_replace_js.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_fortawesome_fontawesome-free_css_all_min_css-karkov_k-ef30a9.js",
+        "/bundles/kcms/kcms_admin.js"
+      ],
+      "css": [
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_fortawesome_fontawesome-free_css_all_min_css-karkov_k-ef30a9.css",
+        "/bundles/kcms/kcms_admin.css"
+      ]
+    },
+    "ckeditor": {
+      "js": [
+        "/bundles/kcms/runtime.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_jquery_dist_jquery_js.js",
+        "/bundles/kcms/vendors-karkov_kcms-bundle_node_modules_core-js_modules_es_string_replace_js.js",
+        "/bundles/kcms/ckeditor.js"
+      ]
+    }
+  }
+}

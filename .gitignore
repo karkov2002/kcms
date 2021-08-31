@@ -1,3 +1,5 @@
 tmp/*
 vendor/*
 vendor/**/.git
+node_modules/*
+.phpunit.result.cache

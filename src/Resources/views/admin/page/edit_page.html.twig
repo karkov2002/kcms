@@ -1,0 +1,112 @@
+{% extends '@Kcms/admin/admin.html.twig' %}
+
+{% block title %} Kcms Edit Page {% endblock %}
+
+{% block body_title %}
+    <h1>Edit Page</h1>
+{% endblock %}
+
+{% block body %}
+    <div id="kcms_page" data-page_id="{{page.id}}"></div>
+
+    <div class="container-fluid">
+        <div class="row">
+
+            <div class="col col-lg-6">
+                <h4>Edit page parameters</h4>
+                <div>
+                    {{ form_start(page_edit_form) }}
+                    {{ form_row(page_edit_form.title) }}
+                    {{ form_row(page_edit_form.template) }}
+                    {{ form_row(page_edit_form.sites) }}
+                    <input type="submit" value="save" class="btn btn-primary" />
+                    {{ form_end(page_edit_form) }}
+                </div>
+            </div>
+
+            <div class="col col-lg-3 kcms_pageSlug_list">
+                <h4>Slugs attached to this page</h4>
+                <ul>
+                {% for pageSlug in page.pageSlugs %}
+                    <li>
+                        <span>{{ pageSlug.local }} {{ pageSlug.slug }}</span>
+                        <a class="delete_slug" data-id="{{ pageSlug.id }}"><span class="fa fa-times-circle"></span></a>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+
+            <div class="col col-lg-3 form_add_slug">
+                <h4>Add a slug to this page</h4>
+                {{ form_start(add_slug_form) }}
+                {{ form_row(add_slug_form) }}
+                <div><input type="submit" value="save" class="btn btn-primary" /></div>
+                {{ form_end(add_slug_form) }}
+            </div>
+
+        </div>
+    </div>
+    <hr />
+    <h4>Page zones edition</h4>
+    <div class="form_page_content">
+        {{ form_start(page_content_forms, { 'attr': {'class': 'form_page_content'}}) }}
+        <div id="page_zones_edit">
+            {% for zone in 0..(config.zones.nb-1) %}
+                <div id="zone{{ zone }}" class="zone" data-zone="{{ zone }}">
+                    <div class="zone_number">ZONE #{{ zone }}</div>
+                    <div class="zone_add_pageContent"><i class="fa fa-plus"></i></div>
+                    <div class="block_page_content_sortable" data-initial_zone="{{ zone }}">
+                        {% for page_content in page_content_forms.pageContents %}
+                            {% if page_content.vars.value.zone == zone %}
+
+                                {# Define color for page contents, depending on date#}
+                                {%  if "now"|date('U') > page_content.vars.value.dateEnd|date('U') %}
+                                    {% set dateColor = 'gray' %}
+                                {% elseif "now"|date('U') < page_content.vars.value.dateStart|date('U') %}
+                                    {% set dateColor = 'orange' %}
+                                {% else %}
+                                    {% set dateColor = 'green' %}
+                                {% endif %}
+
+                                <div class="sortable_element draggable_element page_content_{{ dateColor }}" data-initial_zone="{{ zone }}" data-id="{{ page_content.vars.value.id }}">
+                                    <p class="sortable_handle">
+                                        <i class="fa fa-angle-up content-page-sortable-up-arrow"></i>
+                                        <i class="fa fa-angle-down content-page-sortable-down-arrow"></i>
+                                    </p>
+                                    <p class="draggable_handle">
+                                        <i class="fa fa-arrows"></i>
+                                    </p>
+                                    <div id="page_content_{{ page_content.vars.value.id }}" class="page_content" data-id="{{ page_content.vars.value.id }}">
+                                        {% if dateColor == 'green' %}
+                                            <p class="schedule_infos live">Live</p>
+                                        {% elseif dateColor == 'orange' %}
+                                            <p class="schedule_infos scheduled">Scheduled</p>
+                                        {% else %}
+                                            <p class="schedule_infos terminated">Terminated</p>
+                                        {% endif %}
+                                        {{ form_widget(page_content) }}
+                                        {{ form_errors(page_content) }}
+                                        {% set content = page_content.vars.value.content %}
+                                        <div id="content_{{ content.id }}" class="kcms_content" data-id="{{ content.id }}">
+                                            <h3><a href="/kcms/admin/edit_content/{{ content.id }}" target="_blank">{{ content.title }}</a></h3>
+                                            <p>{{ content.module }}</p>
+                                        </div>
+
+                                        <div class="delete-page_content"><i class="fa fa-window-close"></i></div>
+                                        <div><input type="submit" value="save" class="btn btn-primary" /></div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {{ form_end(page_content_forms) }}
+    </div>
+
+    <div id="dialog" title="Alert"></div>
+    <div id="dialog-select" title="Select"></div>
+    <div id="dialog-confirm" title="Confirm"></div>
+
+{% endblock body %}

@@ -2,5 +2,5 @@ kcms:
     zones:
         nb: 10
     multilingual:
-      enable: false
-      default_local: ~
+      enable: true
+      local: ['en_UK','fr_FR']

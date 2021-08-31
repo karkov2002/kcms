@@ -18,4 +18,25 @@ class PageSlugRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, PageSlug::class);
     }
+
+    public function findSlug($site, $local, $slug): ?PageSlug
+    {
+        return $this->createQueryBuilder('page_slug')
+            ->innerJoin('page_slug.page', 'page')
+            ->where(':site MEMBER OF page.sites')->setParameter('site', $site)
+            ->andWhere('page_slug.slug = :slug')->setParameter('slug', $slug)
+            ->andWhere('page_slug.local = :local')->setParameter('local', $local)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function findAllSlugsBySiteAndLocal($site, $local): array
+    {
+        return $this->createQueryBuilder('page_slug')
+            ->innerJoin('page_slug.page', 'page')
+            ->where(':site MEMBER OF page.sites')->setParameter('site', $site)
+            ->andWhere('page_slug.local = :local')->setParameter('local', $local)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -12,11 +12,6 @@ class KcmsBundle extends Bundle
         $this->container = $container;
     }
 
-    public function boot()
-    {
-        $config = $this->container->getParameter('kcms');
-    }
-
     public function getConfig()
     {
         return $this->container->getParameter('kcms');

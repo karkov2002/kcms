@@ -3,30 +3,126 @@ parameters:
         kcms: 'kcms_'
 
 services:
-    # default configuration for services in kcms bundle
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: false       # Allows optimizing the container by removing unused services; this also means
-                            # fetching services directly from the container via $container->get() won't work.
-                            # The best practice is to be explicit about your dependencies anyway.
+        autowire: false
+        autoconfigure: true
+        public: false
+        bind:
+          $config: '%kcms%'
 
-    # Kcms : Path is referring from bundle Resources/config directory
-    Karkov\Kcms\Service\:
-        resource: '../../Service/*'
-
-    Karkov\Kcms\Controller\:
-      resource: '../../Controller/*'
-
-    Karkov\Kcms\Repository\:
-      resource: '../../Repository/*'
+    #====================================
+    #  Kcms services configuration
+    #====================================
 
     Karkov\Kcms\KcmsBundle:
       class: 'Karkov\Kcms\KcmsBundle'
 
-    Karkov\Kcms\EventListener\KernelRequestListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.request }
+    Karkov\Kcms\Service\Provider\KcmsDtoProvider:
+      class: 'Karkov\Kcms\Service\Provider\KcmsDtoProvider'
+      arguments:
+        $cache: '@cache.kcms'
+        $container: '@service_container'
+        $twig: '@twig'
+        $security: '@security.helper'
+        $config: '%kcms%'
+
+    Karkov\Kcms\Service\Provider\RequestDtoProvider:
+      class: 'Karkov\Kcms\Service\Provider\RequestDtoProvider'
+      arguments:
+        $config: '%kcms%'
+        $pageSlugProvider: '@Karkov\Kcms\Service\Provider\PageSlugProvider'
+        $cache: '@cache.kcms'
+
+    Karkov\Kcms\Service\Selector\ModuleSelector:
+      class: Karkov\Kcms\Service\Selector\ModuleSelector
+      arguments:
+        $projectDir: '%kernel.project_dir%'
+        $classInfosHelper: '@Karkov\Kcms\Service\Helper\ClassInfosHelper'
+
+    Karkov\Kcms\Service\Selector\TemplateSelector:
+      class: Karkov\Kcms\Service\Selector\TemplateSelector
+      arguments:
+        $projectDir: '%kernel.project_dir%'
+
+    Karkov\Kcms\Service\Selector\LocalSelector:
+      class: 'Karkov\Kcms\Service\Selector\LocalSelector'
+      arguments:
+        $requestStack: '@request_stack'
+        $config: '%kcms%'
+
+    Karkov\Kcms\Service\Provider\PageSlugProvider:
+      class: 'Karkov\Kcms\Service\Provider\PageSlugProvider'
+      arguments:
+        $pageSlugRepository: '@Karkov\Kcms\Repository\PageSlugRepository'
+        $siteRepository: '@Karkov\Kcms\Repository\SiteRepository'
+        $cache: '@cache.kcms'
+        $config: '%kcms%'
+
+    Karkov\Kcms\Service\Helper\DateTimer:
+      class: 'Karkov\Kcms\Service\Helper\DateTimer'
+
+    Karkov\Kcms\EventSubscriber\KernelRequestSubscriber:
+      class: 'Karkov\Kcms\EventSubscriber\KernelRequestSubscriber'
+      arguments:
+        $requestDtoProvider: '@Karkov\Kcms\Service\Provider\RequestDtoProvider'
+        $router: '@router.default'
+
+    Karkov\Kcms\ArgumentResolver\KcmsResolver:
+      arguments:
+        $requestDtoProvider: '@Karkov\Kcms\Service\Provider\RequestDtoProvider'
+        $kcmsDtoProvider: '@Karkov\Kcms\Service\Provider\KcmsDtoProvider'
+      tags:
+        - { name: controller.argument_value_resolver, priority: 0 }
+
+    Karkov\Kcms\Service\Helper\ClassInfosHelper:
+      class: Karkov\Kcms\Service\Helper\ClassInfosHelper
+
+    Karkov\Kcms\Service\Builder\NewContentBuilder:
+      class: Karkov\Kcms\Service\Builder\NewContentBuilder
+
+    Karkov\Kcms\Service\Builder\NewPageBuilder:
+      class: Karkov\Kcms\Service\Builder\NewPageBuilder
+
+    Karkov\Kcms\Service\Builder\NewHtmlPatternBuilder:
+      class: Karkov\Kcms\Service\Builder\NewHtmlPatternBuilder
+
+    Karkov\Kcms\Service\Builder\NewTreeBuilder:
+      class: Karkov\Kcms\Service\Builder\NewTreeBuilder
+
+    Karkov\Kcms\Service\ContentLocal\HtmlPatternManager:
+      class: Karkov\Kcms\Service\ContentLocal\HtmlPatternManager
+      arguments:
+        $composedTransformer : '@Karkov\Kcms\Form\DataTransformer\ComposedTransformer'
+
+  #====================================
+    #  Kcms controller configuration
+    #====================================
+
+    Karkov\Kcms\Controller\KcmsController:
+      class: 'Karkov\Kcms\Controller\KcmsController'
+      autowire: true
+
+    Karkov\Kcms\Controller\KcmsApiController:
+        class: 'Karkov\Kcms\Controller\KcmsApiController'
+        autowire: true
+
+    Karkov\Kcms\Controller\Admin\:
+      resource: '../../Controller/Admin'
+      tags: ['controller.service_arguments']
+      autowire: true
+
+    Karkov\Kcms\Controller\SecurityController:
+      class: 'Karkov\Kcms\Controller\SecurityController'
+      autowire: true
+
+    #============================================
+    #  Kcms doctrine & repository configuration
+    #============================================
+
+    Karkov\Kcms\Repository\:
+      resource: '../../Repository/*'
+      arguments:
+        $registry: '@Doctrine\Persistence\ManagerRegistry'
 
     # Adding the table_prefix configuration
     kernel.listener.prefix:
@@ -35,3 +131,53 @@ services:
           - [ setConfig, [ '%table_prefix%'] ]
         tags:
           - { name: doctrine.event_listener, event: loadClassMetadata, method: loadClassMetadata }
+
+    #====================================
+    #  Kcms modules configuration
+    #====================================
+
+    Karkov\Kcms\Modules\:
+      resource: '../../Modules/*'
+      public: true
+      autowire: true
+
+    Karkov\Kcms\Serializer\ComposedModuleElementExtractor:
+      class: Karkov\Kcms\Serializer\ComposedModuleElementExtractor
+      tags:
+        - { name: 'property_info.type_extractor' }
+
+    #====================================
+    #  Kcms Twig Extension
+    #====================================
+
+    Karkov\Kcms\Twig\KcmsExtension:
+      class: Karkov\Kcms\Twig\KcmsExtension
+      tags:
+        - {name: 'twig.extension'}
+
+    #====================================
+    #  Third party bundle configuration
+    #====================================
+
+    Karkov\Kcms\Form\:
+      resource: '../../Form'
+      autowire: true
+
+    Karkov\Kcms\Controller\JsTree\:
+      resource: '../../Controller/JsTree'
+      tags: ['controller.service_arguments']
+      autowire: true
+
+    Karkov\Kcms\Controller\Fileman\:
+      resource: '../../Controller/Fileman'
+      tags: ['controller.service_arguments']
+      autowire: true
+
+    Karkov\Kcms\Service\JsTree\JsTreeManager:
+      class: Karkov\Kcms\Service\JsTree\JsTreeManager
+      arguments:
+        $entityManager: '@doctrine.orm.default_entity_manager'
+        $newContentBuilder: '@Karkov\Kcms\Service\Builder\NewContentBuilder'
+        $newPageBuilder: '@Karkov\Kcms\Service\Builder\NewPageBuilder'
+        $newTreeBuilder: '@Karkov\Kcms\Service\Builder\NewTreeBuilder'
+        $newHtmlPatternBuilder: '@Karkov\Kcms\Service\Builder\NewHtmlPatternBuilder'

@@ -3,10 +3,12 @@
 namespace Karkov\Kcms\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Karkov\Kcms\Repository\PageSlugRepository;
 
 /**
  * @ORM\Entity(repositoryClass=PageSlugRepository::class)
+ * @ORM\Table(uniqueConstraints={@UniqueConstraint(name="slug_unique", columns={"slug","local"})})
  */
 class PageSlug
 {
@@ -18,7 +20,7 @@ class PageSlug
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Page::class, inversedBy="slugs")
+     * @ORM\ManyToOne(targetEntity=Page::class, inversedBy="pageSlugs", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
     private $page;
@@ -33,6 +35,11 @@ class PageSlug
      */
     private $slug;
 
+    /**
+     * @var array
+     */
+    private $routeAttributes;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +53,9 @@ class PageSlug
     public function setPage(?Page $page): self
     {
         $this->page = $page;
+        if (null !== $page) {
+            $this->page->addPageSlug($this);
+        }
 
         return $this;
     }
@@ -72,5 +82,22 @@ class PageSlug
         $this->slug = $slug;
 
         return $this;
+    }
+
+    public function setRouteAttributes(array $routeAttributes): self
+    {
+        $this->routeAttributes = $routeAttributes;
+
+        return $this;
+    }
+
+    public function getRouteAttributes(): array
+    {
+        return $this->routeAttributes;
+    }
+
+    public function __toString()
+    {
+        return $this->local.$this->slug;
     }
 }

@@ -36,7 +36,7 @@ class KcmsExtension extends Extension implements PrependExtensionInterface
     {
         $paths = [];
 
-        // Default bundle templates
+        // Kcms bundle templates
         $paths['%kernel.project_dir%/vendor/karkov/kcms-bundle/src/Resources/views/'] = 'KcmsBundle';
 
         return $paths;

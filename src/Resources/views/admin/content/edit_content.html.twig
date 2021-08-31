@@ -1,0 +1,94 @@
+{% extends '@Kcms/admin/admin.html.twig' %}
+
+{% block title %}Kcms - Edit Content{% endblock %}
+
+{% block body_title %}
+    <h1>Edit content</h1>
+{% endblock %}
+
+{% block body %}
+
+    {% set isComposedContent = formContentLocalized.rawContent.patternHtml is defined  %}
+
+    <h3>Content parameters</h3>
+    <div class="content_parameters">
+        {{ form_start(formContent) }}
+        {{ form_row(formContent) }}
+        <div><input type="submit" value="save" class="btn btn-primary"></div>
+        {{ form_end(formContent) }}
+    </div>
+
+    <hr />
+    <h3>Content</h3>
+
+    <div class="tabs_local">
+        {% for local, formContentLocalized in formContentLocalizedView %}
+            <div id="tab_{{ local }}" data-local="{{ local }}" class="tab_local">
+                <h2>{{ local }}</h2>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="tabs_contents_local">
+        {% for local, formContentLocalized in formContentLocalizedView %}
+
+            {% form_theme formContentLocalized '@Kcms/admin/form/elements.html.twig' %}
+
+            <div id="tab_content_{{ local }}" class="tab_content_local">
+                {% if formContentLocalized.rawContent.elements is defined %}
+                    {% set isComposedContent = true  %}
+                {% else %}
+                    {% set isComposedContent = false  %}
+                {% endif %}
+
+                {{ form_start(formContentLocalized) }}
+                {{ form_row(formContentLocalized.local) }}
+
+                {% if isComposedContent %}
+                    <div class="pattern_html">
+                        <h2>PATTERN HTML</h2>
+                        {% if formContentLocalized.vars.value.htmlPattern is null %}
+                            <input type="button" class="btn btn-primary add_external_html_pattern" data-local="{{ local }}" data-id="{{formContentLocalized.vars.value.id}}" value="Attach an external html pattern to this localized content" />
+                            <hr />
+                            <div data-id="{{ formContentLocalized.rawContent.patternHtml.vars.id }}">
+                                Adding new element :
+                                <input type="button" value="HTML" class="btn btn-primary add_element_html" />
+                                <input type="button" value="HTML_LIGHT" class="btn btn-primary add_element_html" />
+                                <input type="button" value="TXT" class="btn btn-primary add_element_html" />
+                                <input type="button" value="TXT_AREA" class="btn btn-primary add_element_html" />
+                                <input type="button" value="IMG" class="btn btn-primary add_element_html" />
+                                <input type="button" value="MEDIA_URL" class="btn btn-primary add_element_html" />
+                            </div>
+                            {{ form_row(formContentLocalized.rawContent.patternHtml) }}
+
+                        {% else %}
+                            An external html Pattern is currently attached to this localized content :
+                            <a href="/kcms/admin/edit_patternhtml/{{ formContentLocalized.vars.value.htmlPattern.id }}" target="_blank">
+                                {{ formContentLocalized.vars.value.htmlPattern.title }}
+                            </a>
+                            <a class="htmlpattern_remove fa fa-window-close" data-local="{{ local }}" data-id="{{ formContentLocalized.vars.value.id }}"></a>
+                        {% endif %}
+                    </div>
+                    <input type="submit" value="save" class="btn btn-primary">
+                    <div class="composed_elements">
+                        {% for element in formContentLocalized.rawContent.elements %}
+                            <h2>ELEMENT #{{ element.vars.value.id }}</h2>
+                            {{ form_row(element) }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form_row(formContentLocalized.rawContent) }}
+                {% endif %}
+
+                <input type="submit" value="save" class="btn btn-primary">
+                {{ form_end(formContentLocalized) }}
+                <hr />
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="dialog" title="Alert"></div>
+    <div id="dialog-select" title="Select"></div>
+    <div id="dialog-confirm" title="Confirm"></div>
+{% endblock %}
+

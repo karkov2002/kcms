@@ -30,7 +30,7 @@ class Site
     private $isEnable;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Page::class, mappedBy="site")
+     * @ORM\ManyToMany(targetEntity=Page::class, mappedBy="sites")
      */
     private $pages;
 
@@ -93,5 +93,10 @@ class Site
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->domain;
     }
 }

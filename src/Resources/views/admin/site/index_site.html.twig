@@ -1,0 +1,45 @@
+{% extends '@Kcms/admin/admin.html.twig' %}
+
+{% block body_title %}
+    <h1>Sites</h1>
+{% endblock %}
+
+{% block body %}
+    <div class="site_list">
+        <ul>
+        {% for site in sites %}
+            <li>
+                <a href="{{ path('kcms_admin_edit_site', {site: site.id}) }}  " target="_blank">{{ site.domain }}</a>
+                {% if site.isEnable %}
+                    <span class="site_live fa fa-check"></span>
+                {% else %}
+                    <span class="site_close fa fa-ban"></span>
+                {% endif %}
+                <a class="delete_site" data-id="{{ site.id }}"><span class="fa fa-times-circle"></span></a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <hr />
+    <div class="site_list">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <h3>Create a new site</h3>
+        {{ form_start(formCreateNewSite) }}
+        {{ form_row(formCreateNewSite) }}
+        <input class="btn btn-primary" type="submit" value="save">
+        {{ form_end(formCreateNewSite) }}
+    </div>
+
+    <div id="dialog" title="Alert"></div>
+    <div id="dialog-select" title="Select"></div>
+    <div id="dialog-confirm" title="Confirm"></div>
+{% endblock %}

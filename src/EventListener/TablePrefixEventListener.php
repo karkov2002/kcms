@@ -17,6 +17,11 @@ class TablePrefixEventListener
         $this->config = $config;
     }
 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $classMetadata = $eventArgs->getClassMetadata();

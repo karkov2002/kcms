@@ -1,0 +1,52 @@
+{% extends '@KcmsBundle/admin/__base.html.twig' %}
+
+{% block title %}Kcms Admin{% endblock %}
+
+{% block head %}
+    <!-- ckeditor library -->
+    <script src="/bundles/kcms/ckeditor/ckeditor.js"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ encore_entry_link_tags('kcms_admin', null, 'kcms_admin') }}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+
+{% block header %}
+    <a href="/kcms/admin">Kcms Administration</a>
+{% endblock %}
+
+{%  block menu %}
+    <ul>
+        <li >
+            <span class="fa-fw fa fa-photo-video"></span>
+            <a href="/kcms/admin/media_center">Media Center</a>
+        </li>
+        <li>
+            <span class="fa-fw fa fa-desktop"></span>
+            <a href="/kcms/admin/sites">Sites</a>
+        </li>
+        <li>
+            <span class="fa-fw fa fa-file-alt"></span>
+            <a href="/kcms/admin/pages">Pages</a>
+        </li>
+        <li>
+            <span class="fa-fw fa fa-edit"></span>
+            <a href="/kcms/admin/contents">Contents</a>
+        </li>
+        <li>
+            <span class="fa-fw fa fa-edit"></span>
+            <a href="/kcms/admin/patternhtmls">PatternHtml</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block javascripts %}
+    <!-- Kcms admin -->
+    {{ encore_entry_script_tags('kcms_admin', null, 'kcms_admin') }}
+
+    <!-- ckeditor app code -->
+    <script src="/bundles/kcms/ckeditor.js" defer></script>
+{% endblock %}
+
+

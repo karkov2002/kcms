@@ -2,30 +2,20 @@
 
 namespace Karkov\Kcms\Controller;
 
-use Karkov\Kcms\KcmsBundle;
+use Karkov\Kcms\Dto\KcmsDto;
+use Karkov\Kcms\Exception\NotFoundHttpException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class KcmsController extends AbstractController
 {
-    private $config;
-
-    public function __construct(KcmsBundle $KcmsBundle)
+    public function __invoke(KcmsDto $kcms, Request $request): Response
     {
-        $this->config = $KcmsBundle->getConfig();
-    }
+        if (null === $kcms->getPage()) {
+            throw new NotFoundHttpException(sprintf('Kcms page not found for request %s', $kcms->getRequestDto()));
+        }
 
-    /**
-     * @Route("/kcms/{slug}", name="kcms_controller")
-     */
-    public function __invoke(Request $request, string $slug): Response
-    {
-        $local = $request->getLocale();
-
-        dump([$local, $slug, $this->config]);
-
-        return $this->render('@Kcms/default/default.html.twig', []);
+        return new Response($this->renderView($kcms->getPage()->getTemplate(), ['kcms' => $kcms]));
     }
 }
