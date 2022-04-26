@@ -8,7 +8,9 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <div id="kcms_page" data-page_id="{{kcms.page.id}}"></div>
+        {% if kcms.page.id is defined %}
+            <div id="kcms_page" data-page_id="{{kcms.page.id}}"></div>
+        {% endif %}
         {% block body %}{% endblock %}
         {% block javascripts %}{% endblock %}
     </body>
